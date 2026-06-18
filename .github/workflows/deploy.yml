@@ -2,19 +2,20 @@ name: Deploy Notes-Frontend
 on:
   push:
     branches: [main]
+  workflow_dispatch:
 
 jobs:
   deploy:
     runs-on: ubuntu-latest
     permissions:
       contents: 'read'
-      id-token: 'write' 
+      id-token: 'write'
 
     steps:
       - uses: actions/checkout@v7
 
-      # Debugging Step: This will verify if secrets are present.
-      # Note: The values will be masked as *** in your logs.
+      # Debugging Step: Verifies if secrets are correctly injected.
+      # Masked values will appear as *** in the logs.
       - name: Debug Secret Injection
         run: |
           if [ -z "${{ secrets.GCP_WORKLOAD_IDENTITY_PROVIDER }}" ]; then
