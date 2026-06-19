@@ -1,11 +1,11 @@
 import { TrashIcon, EditIcon } from '../NoteList/Icons';
 import './NoteListItem.css';
 
-export default function NoteListItem({ note, onArchive }) {
+export default function NoteListItem({ note, onArchive, onClick }) {
   const { id, name, data, createdAt } = note;
 
   return (
-    <div className="note-list-item">
+    <div className="note-list-item" onClick={() => onClick && onClick(note, 'view')}>
       <div className="note-header-row">
         <div className="note-title-container">
           <h3 className="note-name">{name}</h3>
@@ -25,6 +25,7 @@ export default function NoteListItem({ note, onArchive }) {
                 className="edit-btn"
                 onClick={(e) => {
                   e.stopPropagation();
+                  onClick && onClick(note, 'edit');
                 }}
                 title="Edit Note"
               >

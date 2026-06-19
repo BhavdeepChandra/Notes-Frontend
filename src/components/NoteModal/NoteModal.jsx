@@ -1,23 +1,25 @@
 import { useState, useEffect } from 'react';
 import './NoteModal.css';
 
-export default function NoteModal({ isOpen, onSave, onClose }) {
+export default function NoteModal({ isOpen, onSave, onClose, note, mode = 'create', title }) {
   const [name, setName] = useState('');
   const [data, setData] = useState('');
   const [error, setError] = useState('');
 
   useEffect(() => {
     if (isOpen) {
-      setName('');
-      setData('');
+      setName(note ? note.name : '');
+      setData(note ? note.data : '');
       setError('');
     }
-  }, [isOpen]);
+  }, [isOpen, note]);
 
   if (!isOpen) return null;
 
   const handleSubmit = (e) => {
     e.preventDefault();
+    if (mode === 'view') return;
+
     if (!name.trim()) {
       setError('Note Title/Description is required.');
       return;
@@ -34,7 +36,7 @@ export default function NoteModal({ isOpen, onSave, onClose }) {
     <div className="modal-overlay" onClick={onClose}>
       <div className="modal-content" onClick={(e) => e.stopPropagation()}>
         <div className="modal-header">
-          <h2>Create New Note</h2>
+          <h2>{title || (mode === 'view' ? 'View Note' : mode === 'edit' ? 'Edit Note' : 'Create New Note')}</h2>
           <button className="modal-close-btn" onClick={onClose} aria-label="Close modal">
             &times;
           </button>
@@ -50,7 +52,8 @@ export default function NoteModal({ isOpen, onSave, onClose }) {
               placeholder="e.g. Ideas for next week"
               value={name}
               onChange={(e) => setName(e.target.value)}
-              autoFocus
+              autoFocus={mode !== 'view'}
+              readOnly={mode === 'view'}
             />
           </div>
 
@@ -62,16 +65,25 @@ export default function NoteModal({ isOpen, onSave, onClose }) {
               rows="5"
               value={data}
               onChange={(e) => setData(e.target.value)}
+              readOnly={mode === 'view'}
             />
           </div>
 
           <div className="modal-actions">
-            <button type="button" className="btn-cancel" onClick={onClose}>
-              Cancel
-            </button>
-            <button type="submit" className="btn-save">
-              Save Note
-            </button>
+            {mode === 'view' ? (
+              <button type="button" className="btn-save" onClick={onClose}>
+                Close
+              </button>
+            ) : (
+              <>
+                <button type="button" className="btn-cancel" onClick={onClose}>
+                  Cancel
+                </button>
+                <button type="submit" className="btn-save">
+                  Save Note
+                </button>
+              </>
+            )}
           </div>
         </form>
       </div>
