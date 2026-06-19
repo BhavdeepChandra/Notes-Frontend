@@ -1,7 +1,6 @@
 .note-list {
   display: flex;
   flex-direction: column;
-  gap: 16px;
   width: 100%;
   max-width: 800px;
   margin: 40px auto;
@@ -10,9 +9,106 @@
   text-align: left;
 }
 
+.notes-tabs {
+  display: flex;
+  gap: 24px;
+  border-bottom: 1px solid var(--border);
+  padding-bottom: 8px;
+  margin-bottom: 24px;
+}
+
+.tab-item {
+  background: none;
+  border: none;
+  padding: 8px 4px;
+  font-family: var(--sans);
+  font-size: 1rem;
+  font-weight: 500;
+  color: var(--text);
+  cursor: pointer;
+  position: relative;
+  transition: color 0.2s ease, transform 0.1s ease;
+}
+
+.tab-item:hover {
+  color: var(--text-h);
+}
+
+.tab-item::after {
+  content: '';
+  position: absolute;
+  bottom: -9px;
+  left: 0;
+  right: 0;
+  height: 2px;
+  background: var(--accent);
+  opacity: 0;
+  transform: scaleX(0.8);
+  transition: opacity 0.2s ease, transform 0.2s cubic-bezier(0.4, 0, 0.2, 1);
+}
+
+.tab-item.active {
+  color: var(--text-h);
+  font-weight: 600;
+}
+
+.tab-item.active::after {
+  opacity: 1;
+  transform: scaleX(1);
+}
+
+.tab-item:active {
+  transform: scale(0.97);
+}
+
+.notes-container {
+  display: flex;
+  flex-direction: column;
+  gap: 16px;
+  width: 100%;
+}
+
+.empty-state {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  padding: 48px 24px;
+  border: 1px dashed var(--border);
+  border-radius: 12px;
+  background: var(--code-bg);
+  text-align: center;
+  animation: fadeIn 0.4s ease;
+}
+
+.empty-icon {
+  color: var(--text);
+  opacity: 0.5;
+  margin-bottom: 12px;
+}
+
+.empty-text {
+  font-size: 1rem;
+  font-family: var(--sans);
+  color: var(--text);
+  margin: 0;
+}
+
+@keyframes fadeIn {
+  from {
+    opacity: 0;
+    transform: translateY(8px);
+  }
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
+}
+
 @media (max-width: 640px) {
   .note-list {
     margin: 20px auto;
     padding: 0 16px;
   }
 }
+
