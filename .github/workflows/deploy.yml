@@ -12,7 +12,7 @@ jobs:
       id-token: 'write'
 
     steps:
-      - name: Checkout
+      - name: Checkout Code
         uses: actions/checkout@v7
 
       - id: 'auth'
@@ -22,16 +22,14 @@ jobs:
           workload_identity_provider: '${{ secrets.GCP_WORKLOAD_IDENTITY_PROVIDER }}'
           service_account: '${{ secrets.GCP_SA_EMAIL }}'
 
+      - name: Install Dependencies
+        run: npm ci
+
       - name: Build
-        run: |
-          npm install
-          npm run build
+        run: npm run build
 
       - name: Deploy to Firebase
-        uses: FirebaseExtended/action-hosting-deploy@v0
-        with:
-          repoToken: '${{ secrets.GITHUB_TOKEN }}'
-          firebaseServiceAccount: '${{ secrets.GCP_SA_EMAIL }}'
-          projectId: 'crypto-isotope-499819-r7'
+        run: |
+          npx firebase-tools deploy --only hosting --project '${{ secrets.GCP_PROJECT_ID }}' --non-interactive
         env:
           GOOGLE_APPLICATION_CREDENTIALS: ${{ steps.auth.outputs.credentials_file_path }}
