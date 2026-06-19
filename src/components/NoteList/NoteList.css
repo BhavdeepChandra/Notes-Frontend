@@ -1,0 +1,18 @@
+.note-list {
+  display: flex;
+  flex-direction: column;
+  gap: 16px;
+  width: 100%;
+  max-width: 800px;
+  margin: 40px auto;
+  padding: 0 24px;
+  box-sizing: border-box;
+  text-align: left;
+}
+
+@media (max-width: 640px) {
+  .note-list {
+    margin: 20px auto;
+    padding: 0 16px;
+  }
+}
