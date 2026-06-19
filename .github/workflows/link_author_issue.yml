@@ -1,0 +1,17 @@
+name: Auto Assign PR Creator to Issue
+on:
+  pull_request:
+    types: [opened]
+
+jobs:
+  assign:
+    runs-on: ubuntu-latest
+    permissions:
+      issues: write
+      pull-requests: write
+    steps:
+      - uses: tkt-actions/add-issue-links@v1.9.1
+        with:
+          repo-token: '${{ secrets.GITHUB_TOKEN }}'
+          link-style: 'comment'
+          assign-pr-creator-to-issue: 'true'  
