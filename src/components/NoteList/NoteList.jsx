@@ -32,6 +32,14 @@ export default function NoteList() {
     setIsModalOpen(false);
   };
 
+  const handleArchiveNote = (id) => {
+    setNotes((prevNotes) =>
+      prevNotes.map((note) =>
+        note.id === id ? { ...note, archived: true } : note
+      )
+    );
+  };
+
   return (
     <div className="note-list">
       <div className="notes-tabs">
@@ -59,7 +67,11 @@ export default function NoteList() {
 
         {filteredNotes.length > 0 ? (
           filteredNotes.map((note) => (
-            <NoteListItem key={note.id} note={note} />
+            <NoteListItem
+              key={note.id}
+              note={note}
+              onArchive={handleArchiveNote}
+            />
           ))
         ) : (
           <div className="empty-state">
