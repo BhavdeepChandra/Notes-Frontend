@@ -12,22 +12,8 @@ jobs:
       id-token: 'write'
 
     steps:
-      - uses: actions/checkout@v7
-
-      # Debugging Step: Verifies if secrets are correctly injected.
-      # Masked values will appear as *** in the logs.
-      - name: Debug Secret Injection
-        run: |
-          if [ -z "${{ secrets.GCP_WORKLOAD_IDENTITY_PROVIDER }}" ]; then
-            echo "::error::PROVIDER secret is EMPTY."
-          else
-            echo "PROVIDER secret is injected."
-          fi
-          if [ -z "${{ secrets.GCP_SA_EMAIL }}" ]; then
-            echo "::error::SA_EMAIL secret is EMPTY."
-          else
-            echo "SA_EMAIL secret is injected."
-          fi
+      - name: Checkout
+        uses: actions/checkout@v7
 
       - id: 'auth'
         name: 'Authenticate to Google Cloud'
@@ -36,7 +22,7 @@ jobs:
           workload_identity_provider: '${{ secrets.GCP_WORKLOAD_IDENTITY_PROVIDER }}'
           service_account: '${{ secrets.GCP_SA_EMAIL }}'
 
-      - name: Build Application
+      - name: Build
         run: |
           npm install
           npm run build
@@ -47,3 +33,5 @@ jobs:
           repoToken: '${{ secrets.GITHUB_TOKEN }}'
           firebaseServiceAccount: '${{ secrets.GCP_SA_EMAIL }}'
           projectId: 'crypto-isotope-499819-r7'
+        env:
+          GOOGLE_APPLICATION_CREDENTIALS: ${{ steps.auth.outputs.credentials_file_path }}
