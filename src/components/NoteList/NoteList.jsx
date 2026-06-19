@@ -1,18 +1,36 @@
 import { useState } from 'react';
 import NoteListItem from '../NoteListItem/NoteListItem';
 import { ActiveNotesIcon, ArchivedNotesIcon, PlusIcon } from './Icons';
+import NoteModal from '../NoteModal/NoteModal';
 import './NoteList.css';
 import {INITIAL_NOTES} from './NoteListHelper'
 
 
 
 export default function NoteList() {
-  const [notes] = useState(INITIAL_NOTES);
+  const [notes, setNotes] = useState(INITIAL_NOTES);
   const [activeTab, setActiveTab] = useState('active');
+  const [isModalOpen, setIsModalOpen] = useState(false);
 
   const filteredNotes = notes.filter((note) =>
     activeTab === 'active' ? !note.archived : note.archived
   );
+
+  const handleAddNote = (newNoteData) => {
+    const options = { month: 'short', day: 'numeric', year: 'numeric' };
+    const today = new Date().toLocaleDateString('en-US', options);
+
+    const newNote = {
+      id: Date.now().toString(),
+      name: newNoteData.name,
+      data: newNoteData.data,
+      createdAt: today,
+      archived: false,
+    };
+
+    setNotes([newNote, ...notes]);
+    setIsModalOpen(false);
+  };
 
   return (
     <div className="note-list">
@@ -33,7 +51,7 @@ export default function NoteList() {
 
       <div className="notes-container">
         {activeTab === 'active' && (
-          <div className="note-list-item add-note-item">
+          <div className="note-list-item add-note-item" onClick={() => setIsModalOpen(true)}>
             <PlusIcon className="add-note-icon" />
             <span className="add-note-text">Add Note</span>
           </div>
@@ -60,6 +78,12 @@ export default function NoteList() {
           </div>
         )}
       </div>
+
+      <NoteModal
+        isOpen={isModalOpen}
+        onSave={handleAddNote}
+        onClose={() => setIsModalOpen(false)}
+      />
     </div>
   );
 }
