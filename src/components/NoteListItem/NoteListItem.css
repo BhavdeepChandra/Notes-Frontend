@@ -64,7 +64,8 @@
   color: var(--accent);
 }
 
-.delete-btn {
+.delete-btn,
+.edit-btn {
   background: transparent;
   border: none;
   padding: 4px;
@@ -78,7 +79,8 @@
   opacity: 0;
 }
 
-.note-list-item:hover .delete-btn {
+.note-list-item:hover .delete-btn,
+.note-list-item:hover .edit-btn {
   opacity: 0.7;
 }
 
@@ -89,14 +91,23 @@
   transform: scale(1.1);
 }
 
-.delete-icon {
+.note-list-item:hover .edit-btn:hover {
+  opacity: 1;
+  color: #eab308;
+  background: rgba(234, 179, 8, 0.1);
+  transform: scale(1.1);
+}
+
+.delete-icon,
+.edit-icon {
   width: 16px;
   height: 16px;
   display: block;
 }
 
 @media (max-width: 640px) {
-  .delete-btn {
+  .delete-btn,
+  .edit-btn {
     opacity: 0.8;
   }
 }

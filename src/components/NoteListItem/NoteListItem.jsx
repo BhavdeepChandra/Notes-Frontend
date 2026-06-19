@@ -1,4 +1,4 @@
-import { TrashIcon } from '../NoteList/Icons';
+import { TrashIcon, EditIcon } from '../NoteList/Icons';
 import './NoteListItem.css';
 
 export default function NoteListItem({ note, onArchive }) {
@@ -10,16 +10,27 @@ export default function NoteListItem({ note, onArchive }) {
         <div className="note-title-container">
           <h3 className="note-name">{name}</h3>
           {!note.archived && onArchive && (
-            <button
-              className="delete-btn"
-              onClick={(e) => {
-                e.stopPropagation();
-                onArchive(id);
-              }}
-              title="Archive Note"
-            >
-              <TrashIcon className="delete-icon" />
-            </button>
+            <>
+              <button
+                className="delete-btn"
+                onClick={(e) => {
+                  e.stopPropagation();
+                  onArchive(id);
+                }}
+                title="Archive Note"
+              >
+                <TrashIcon className="delete-icon" />
+              </button>
+              <button
+                className="edit-btn"
+                onClick={(e) => {
+                  e.stopPropagation();
+                }}
+                title="Edit Note"
+              >
+                <EditIcon className="edit-icon" />
+              </button>
+            </>
           )}
         </div>
         <span className="note-date">{createdAt}</span>
