@@ -112,3 +112,29 @@
   }
 }
 
+.note-list-item.add-note-item {
+  display: flex;
+  flex-direction: row;
+  align-items: center;
+  justify-content: center;
+  gap: 10px;
+  border-style: dashed;
+  border-color: var(--accent-border);
+  color: var(--accent);
+  font-weight: 600;
+  padding: 20px 24px;
+}
+
+.note-list-item.add-note-item:hover {
+  background: var(--code-bg);
+  border-color: var(--accent);
+}
+
+.add-note-icon {
+  transition: transform 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+}
+
+.note-list-item.add-note-item:hover .add-note-icon {
+  transform: rotate(90deg);
+}
+

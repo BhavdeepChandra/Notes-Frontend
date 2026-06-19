@@ -1,6 +1,6 @@
 import { useState } from 'react';
 import NoteListItem from '../NoteListItem/NoteListItem';
-import { ActiveNotesIcon, ArchivedNotesIcon } from './EmptyIcons';
+import { ActiveNotesIcon, ArchivedNotesIcon, PlusIcon } from './Icons';
 import './NoteList.css';
 import {INITIAL_NOTES} from './NoteListHelper'
 
@@ -32,6 +32,13 @@ export default function NoteList() {
       </div>
 
       <div className="notes-container">
+        {activeTab === 'active' && (
+          <div className="note-list-item add-note-item">
+            <PlusIcon className="add-note-icon" />
+            <span className="add-note-text">Add Note</span>
+          </div>
+        )}
+
         {filteredNotes.length > 0 ? (
           filteredNotes.map((note) => (
             <NoteListItem key={note.id} note={note} />
