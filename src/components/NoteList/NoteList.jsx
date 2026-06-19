@@ -11,25 +11,48 @@ export default function NoteList() {
   const [notes, setNotes] = useState(INITIAL_NOTES);
   const [activeTab, setActiveTab] = useState('active');
   const [isModalOpen, setIsModalOpen] = useState(false);
+  const [editingNote, setEditingNote] = useState(null);
+  const [modalMode, setModalMode] = useState('create');
 
   const filteredNotes = notes.filter((note) =>
     activeTab === 'active' ? !note.archived : note.archived
   );
 
-  const handleAddNote = (newNoteData) => {
-    const options = { month: 'short', day: 'numeric', year: 'numeric' };
-    const today = new Date().toLocaleDateString('en-US', options);
+  const handleOpenAddModal = () => {
+    setEditingNote(null);
+    setModalMode('create');
+    setIsModalOpen(true);
+  };
 
-    const newNote = {
-      id: Date.now().toString(),
-      name: newNoteData.name,
-      data: newNoteData.data,
-      createdAt: today,
-      archived: false,
-    };
+  const handleOpenNoteModal = (note, mode) => {
+    setEditingNote(note);
+    setModalMode(mode);
+    setIsModalOpen(true);
+  };
 
-    setNotes([newNote, ...notes]);
+  const handleSaveNote = (noteData) => {
+    if (modalMode === 'edit' && editingNote) {
+      setNotes((prevNotes) =>
+        prevNotes.map((note) =>
+          note.id === editingNote.id ? { ...note, name: noteData.name, data: noteData.data } : note
+        )
+      );
+    } else {
+      const options = { month: 'short', day: 'numeric', year: 'numeric' };
+      const today = new Date().toLocaleDateString('en-US', options);
+
+      const newNote = {
+        id: Date.now().toString(),
+        name: noteData.name,
+        data: noteData.data,
+        createdAt: today,
+        archived: false,
+      };
+
+      setNotes([newNote, ...notes]);
+    }
     setIsModalOpen(false);
+    setEditingNote(null);
   };
 
   const handleArchiveNote = (id) => {
@@ -59,7 +82,7 @@ export default function NoteList() {
 
       <div className="notes-container">
         {activeTab === 'active' && (
-          <div className="note-list-item add-note-item" onClick={() => setIsModalOpen(true)}>
+          <div className="note-list-item add-note-item" onClick={handleOpenAddModal}>
             <PlusIcon className="add-note-icon" />
             <span className="add-note-text">Add Note</span>
           </div>
@@ -71,6 +94,7 @@ export default function NoteList() {
               key={note.id}
               note={note}
               onArchive={handleArchiveNote}
+              onClick={handleOpenNoteModal}
             />
           ))
         ) : (
@@ -93,8 +117,13 @@ export default function NoteList() {
 
       <NoteModal
         isOpen={isModalOpen}
-        onSave={handleAddNote}
-        onClose={() => setIsModalOpen(false)}
+        onSave={handleSaveNote}
+        onClose={() => {
+          setIsModalOpen(false);
+          setEditingNote(null);
+        }}
+        note={editingNote}
+        mode={modalMode}
       />
     </div>
   );
