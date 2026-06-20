@@ -177,3 +177,46 @@
   width: 16px;
   height: 16px;
 }
+
+.notebook-delete-btn {
+  background: transparent;
+  border: none;
+  color: var(--text);
+  padding: 6px;
+  border-radius: 50%;
+  cursor: pointer;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  transition: all 0.2s ease;
+  opacity: 0;
+}
+
+.notebook-card:hover .notebook-delete-btn,
+.notebook-delete-btn:focus-within {
+  opacity: 0.7;
+}
+
+.notebook-card:hover .notebook-delete-btn:hover {
+  opacity: 1;
+  background: rgba(239, 68, 68, 0.1);
+  color: #ef4444;
+}
+
+@media (prefers-color-scheme: dark) {
+  .notebook-card:hover .notebook-delete-btn:hover {
+    background: rgba(239, 68, 68, 0.15);
+  }
+}
+
+.notebook-delete-icon {
+  width: 16px;
+  height: 16px;
+}
+
+@media (max-width: 640px) {
+  .notebook-edit-btn,
+  .notebook-delete-btn {
+    opacity: 0.8;
+  }
+}
