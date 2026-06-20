@@ -1,4 +1,4 @@
-import { TrashIcon, EditIcon } from '../NoteList/Icons';
+import { TrashIcon, EditIcon } from '../Icons';
 import './NoteListItem.css';
 
 export default function NoteListItem({ note, onArchive, onClick }) {

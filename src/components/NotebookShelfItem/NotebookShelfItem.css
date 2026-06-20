@@ -135,3 +135,45 @@
   opacity: 0.8;
   font-family: var(--sans);
 }
+
+.notebook-actions {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+}
+
+.notebook-edit-btn {
+  background: transparent;
+  border: none;
+  color: var(--text);
+  padding: 6px;
+  border-radius: 50%;
+  cursor: pointer;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  transition: all 0.2s ease;
+  opacity: 0;
+}
+
+.notebook-card:hover .notebook-edit-btn,
+.notebook-edit-btn:focus-within {
+  opacity: 0.7;
+}
+
+.notebook-card:hover .notebook-edit-btn:hover {
+  opacity: 1;
+  background: rgba(170, 59, 255, 0.1);
+  color: var(--accent);
+}
+
+@media (prefers-color-scheme: dark) {
+  .notebook-card:hover .notebook-edit-btn:hover {
+    background: rgba(192, 132, 252, 0.15);
+  }
+}
+
+.notebook-edit-icon {
+  width: 16px;
+  height: 16px;
+}

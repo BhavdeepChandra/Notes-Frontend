@@ -1,7 +1,7 @@
-import { NotebookIcon } from './Icons';
+import { NotebookIcon, EditIcon } from '../Icons';
 import './NotebookShelfItem.css';
 
-export default function NotebookShelfItem({ notebook }) {
+export default function NotebookShelfItem({ notebook, onEdit }) {
   const { name, createdAt, totalNotes, description } = notebook;
 
   return (
@@ -12,9 +12,24 @@ export default function NotebookShelfItem({ notebook }) {
           <div className="notebook-icon-wrapper">
             <NotebookIcon className="notebook-icon" />
           </div>
-          <span className="notebook-notes-count">
-            {totalNotes} {totalNotes === 1 ? 'note' : 'notes'}
-          </span>
+          <div className="notebook-actions">
+            {onEdit && (
+              <button
+                className="notebook-edit-btn"
+                onClick={(e) => {
+                  e.stopPropagation();
+                  onEdit();
+                }}
+                title="Edit Notebook"
+                aria-label="Edit Notebook"
+              >
+                <EditIcon className="notebook-edit-icon" />
+              </button>
+            )}
+            <span className="notebook-notes-count">
+              {totalNotes} {totalNotes === 1 ? 'note' : 'notes'}
+            </span>
+          </div>
         </div>
         <h3 className="notebook-card-name">{name}</h3>
         {description && <p className="notebook-card-description">{description}</p>}
