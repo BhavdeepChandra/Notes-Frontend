@@ -1,0 +1,24 @@
+.notebookshelf-container {
+  padding: 24px;
+  background: var(--bg);
+  border: 1px solid var(--border);
+  border-radius: 12px;
+  box-shadow: var(--shadow);
+  font-family: var(--sans);
+  color: var(--text);
+  transition: all 0.3s ease;
+  text-align: left;
+}
+
+.notebookshelf-title {
+  margin-top: 0;
+  margin-bottom: 12px;
+  font-family: var(--heading);
+  color: var(--text-h);
+  font-size: 1.5rem;
+}
+
+.notebookshelf-placeholder {
+  font-size: 1rem;
+  color: var(--text);
+}
