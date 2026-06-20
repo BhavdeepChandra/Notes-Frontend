@@ -13,6 +13,12 @@ export default function NotebookShelf({ notebooks = [], setNotebooks, onSelectNo
     setIsModalOpen(true);
   };
 
+  const handleDeleteNotebook = (notebookId) => {
+    setNotebooks((prevNotebooks) =>
+      prevNotebooks.filter((nb) => nb.id !== notebookId)
+    );
+  };
+
   const handleSaveNotebook = ({ name, description }) => {
     if (editingNotebook) {
       setNotebooks((prevNotebooks) =>
@@ -46,6 +52,7 @@ export default function NotebookShelf({ notebooks = [], setNotebooks, onSelectNo
             key={notebook.id}
             notebook={notebook}
             onEdit={() => handleOpenEditModal(notebook)}
+            onDelete={() => handleDeleteNotebook(notebook.id)}
             onClick={() => onSelectNotebook && onSelectNotebook(notebook.id)}
           />
         ))}

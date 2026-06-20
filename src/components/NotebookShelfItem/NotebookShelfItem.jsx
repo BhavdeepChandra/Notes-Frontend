@@ -1,7 +1,7 @@
-import { NotebookIcon, EditIcon } from '../Icons';
+import { NotebookIcon, EditIcon, TrashIcon } from '../Icons';
 import './NotebookShelfItem.css';
 
-export default function NotebookShelfItem({ notebook, onEdit, onClick }) {
+export default function NotebookShelfItem({ notebook, onEdit, onDelete, onClick }) {
   const { name, createdAt, description, notes } = notebook;
   const notesCount = notes ? notes.length : 0;
 
@@ -36,6 +36,19 @@ export default function NotebookShelfItem({ notebook, onEdit, onClick }) {
                 aria-label="Edit Notebook"
               >
                 <EditIcon className="notebook-edit-icon" />
+              </button>
+            )}
+            {onDelete && (
+              <button
+                className="notebook-delete-btn"
+                onClick={(e) => {
+                  e.stopPropagation();
+                  onDelete();
+                }}
+                title="Delete Notebook"
+                aria-label="Delete Notebook"
+              >
+                <TrashIcon className="notebook-delete-icon" />
               </button>
             )}
             <span className="notebook-notes-count">
