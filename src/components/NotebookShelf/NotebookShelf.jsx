@@ -1,12 +1,10 @@
 import { useState } from 'react';
 import NotebookShelfItem from '../NotebookShelfItem/NotebookShelfItem';
-import { INITIAL_NOTEBOOKS } from './NotebookShelfHelper';
 import { PlusIcon } from '../Icons';
 import NotebookModal from '../Modal/NotebookModal';
 import './NotebookShelf.css';
 
-export default function NotebookShelf() {
-  const [notebooks, setNotebooks] = useState(INITIAL_NOTEBOOKS);
+export default function NotebookShelf({ notebooks = [], setNotebooks, onSelectNotebook }) {
   const [isModalOpen, setIsModalOpen] = useState(false);
   const [editingNotebook, setEditingNotebook] = useState(null);
 
@@ -32,7 +30,7 @@ export default function NotebookShelf() {
           day: 'numeric',
           year: 'numeric'
         }),
-        totalNotes: 0
+        notes: []
       };
       setNotebooks([...notebooks, newNotebook]);
     }
@@ -48,6 +46,7 @@ export default function NotebookShelf() {
             key={notebook.id}
             notebook={notebook}
             onEdit={() => handleOpenEditModal(notebook)}
+            onClick={() => onSelectNotebook && onSelectNotebook(notebook.id)}
           />
         ))}
         
