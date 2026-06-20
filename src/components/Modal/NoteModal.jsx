@@ -1,5 +1,5 @@
 import { useState, useEffect } from 'react';
-import './NoteModal.css';
+import './Modal.css';
 
 export default function NoteModal({ isOpen, onSave, onClose, note, mode = 'create', title }) {
   const [name, setName] = useState('');

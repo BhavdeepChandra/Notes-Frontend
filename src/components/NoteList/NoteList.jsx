@@ -1,7 +1,7 @@
 import { useState } from 'react';
 import NoteListItem from '../NoteListItem/NoteListItem';
 import { ActiveNotesIcon, ArchivedNotesIcon, PlusIcon } from './Icons';
-import NoteModal from '../NoteModal/NoteModal';
+import NoteModal from '../Modal/NoteModal';
 import './NoteList.css';
 import {INITIAL_NOTES} from './NoteListHelper'
 
