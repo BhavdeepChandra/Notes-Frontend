@@ -1,18 +1,16 @@
 import { useState } from 'react';
 import NoteListItem from '../NoteListItem/NoteListItem';
-import { ActiveNotesIcon, ArchivedNotesIcon, PlusIcon } from '../Icons';
+import { ActiveNotesIcon, ArchivedNotesIcon, PlusIcon, ArrowLeftIcon } from '../Icons';
 import NoteModal from '../Modal/NoteModal';
 import './NoteList.css';
-import {INITIAL_NOTES} from './NoteListHelper'
 
-
-
-export default function NoteList() {
-  const [notes, setNotes] = useState(INITIAL_NOTES);
+export default function NoteList({ notebook, onUpdateNotebook, onBack }) {
   const [activeTab, setActiveTab] = useState('active');
   const [isModalOpen, setIsModalOpen] = useState(false);
   const [editingNote, setEditingNote] = useState(null);
   const [modalMode, setModalMode] = useState('create');
+
+  const notes = notebook?.notes || [];
 
   const filteredNotes = notes.filter((note) =>
     activeTab === 'active' ? !note.archived : note.archived
@@ -31,11 +29,10 @@ export default function NoteList() {
   };
 
   const handleSaveNote = (noteData) => {
+    let updatedNotes;
     if (modalMode === 'edit' && editingNote) {
-      setNotes((prevNotes) =>
-        prevNotes.map((note) =>
-          note.id === editingNote.id ? { ...note, name: noteData.name, data: noteData.data } : note
-        )
+      updatedNotes = notes.map((note) =>
+        note.id === editingNote.id ? { ...note, name: noteData.name, data: noteData.data } : note
       );
     } else {
       const options = { month: 'short', day: 'numeric', year: 'numeric' };
@@ -49,22 +46,43 @@ export default function NoteList() {
         archived: false,
       };
 
-      setNotes([newNote, ...notes]);
+      updatedNotes = [newNote, ...notes];
     }
+
+    if (onUpdateNotebook && notebook) {
+      onUpdateNotebook({
+        ...notebook,
+        notes: updatedNotes
+      });
+    }
+
     setIsModalOpen(false);
     setEditingNote(null);
   };
 
   const handleArchiveNote = (id) => {
-    setNotes((prevNotes) =>
-      prevNotes.map((note) =>
-        note.id === id ? { ...note, archived: true } : note
-      )
+    const updatedNotes = notes.map((note) =>
+      note.id === id ? { ...note, archived: true } : note
     );
+
+    if (onUpdateNotebook && notebook) {
+      onUpdateNotebook({
+        ...notebook,
+        notes: updatedNotes
+      });
+    }
   };
 
   return (
     <div className="note-list">
+      <div className="note-list-header">
+        <button className="back-to-notebooks-btn" onClick={onBack} aria-label="Back to notebooks">
+          <ArrowLeftIcon className="back-icon" />
+          <span>Back to Notebooks</span>
+        </button>
+        <h1 className="notebook-title-header">{notebook?.name}</h1>
+      </div>
+
       <div className="notes-tabs">
         <button
           className={`tab-item ${activeTab === 'active' ? 'active' : ''}`}

@@ -1,11 +1,23 @@
 import { NotebookIcon, EditIcon } from '../Icons';
 import './NotebookShelfItem.css';
 
-export default function NotebookShelfItem({ notebook, onEdit }) {
-  const { name, createdAt, totalNotes, description } = notebook;
+export default function NotebookShelfItem({ notebook, onEdit, onClick }) {
+  const { name, createdAt, description, notes } = notebook;
+  const notesCount = notes ? notes.length : 0;
 
   return (
-    <div className="notebook-card">
+    <div
+      className="notebook-card"
+      onClick={onClick}
+      role="button"
+      tabIndex={0}
+      onKeyDown={(e) => {
+        if (e.key === 'Enter' || e.key === ' ') {
+          e.preventDefault();
+          onClick && onClick();
+        }
+      }}
+    >
       <div className="notebook-card-accent"></div>
       <div className="notebook-card-content">
         <div className="notebook-card-header">
@@ -27,7 +39,7 @@ export default function NotebookShelfItem({ notebook, onEdit }) {
               </button>
             )}
             <span className="notebook-notes-count">
-              {totalNotes} {totalNotes === 1 ? 'note' : 'notes'}
+              {notesCount} {notesCount === 1 ? 'note' : 'notes'}
             </span>
           </div>
         </div>
