@@ -1,22 +1,15 @@
 import { useNotebooksContext } from '../context/NotebooksContext';
-import { generateUUID } from '../utils/uuid';
-import { formatDate } from '../utils/date';
+import { dataService } from '../services/dataService';
 
 export function useNotes(notebookId) {
-  const { notebooks, setNotebooks } = useNotebooksContext();
+  const { notebooks, setNotebooks, dataSource } = useNotebooksContext();
 
   const notebook = notebooks.find((nb) => nb.id === notebookId);
   const notes = notebook?.notes || [];
 
-  const addNote = ({ name, data }) => {
+  const addNote = async ({ name, data }) => {
     if (!notebookId) return;
-    const newNote = {
-      id: generateUUID(),
-      name,
-      data,
-      createdAt: formatDate(),
-      archived: false,
-    };
+    const newNote = await dataService.createNote(dataSource, notebookId, name, data);
 
     setNotebooks((prev) =>
       prev.map((nb) =>
@@ -25,23 +18,25 @@ export function useNotes(notebookId) {
     );
   };
 
-  const updateNote = (noteId, { name, data }) => {
+  const updateNote = async (noteId, { name, data }) => {
     if (!notebookId) return;
+    const updated = await dataService.updateNote(dataSource, notebookId, noteId, name, data);
     setNotebooks((prev) =>
       prev.map((nb) => {
         if (nb.id !== notebookId) return nb;
         return {
           ...nb,
           notes: nb.notes.map((note) =>
-            note.id === noteId ? { ...note, name, data } : note
+            note.id === noteId ? { ...note, ...updated } : note
           ),
         };
       })
     );
   };
 
-  const archiveNote = (noteId) => {
+  const archiveNote = async (noteId) => {
     if (!notebookId) return;
+    await dataService.archiveNote(dataSource, notebookId, noteId);
     setNotebooks((prev) =>
       prev.map((nb) => {
         if (nb.id !== notebookId) return nb;
@@ -62,3 +57,4 @@ export function useNotes(notebookId) {
     archiveNote,
   };
 }
+
