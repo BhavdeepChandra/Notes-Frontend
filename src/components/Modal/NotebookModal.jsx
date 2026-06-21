@@ -53,7 +53,6 @@ export default function NotebookModal({ isOpen, onSave, onClose, notebook, mode 
         </div>
         <form onSubmit={handleSubmit}>
           {error && <div className={styles['modal-error']}>{error}</div>}
-          
           <div className={styles['form-group']}>
             <label htmlFor="notebook-name">Notebook Name</label>
             <input

@@ -8,6 +8,12 @@ export function NotebooksProvider({ children }) {
 
   const [activeNotebookId, setActiveNotebookId] = useState(null);
   const [dataSource, setDataSource] = useState('local');
+  const [prevDataSource, setPrevDataSource] = useState('local');
+
+  if (dataSource !== prevDataSource) {
+    setPrevDataSource(dataSource);
+    setActiveNotebookId(null);
+  }
 
   useEffect(() => {
     let active = true;
@@ -25,10 +31,6 @@ export function NotebooksProvider({ children }) {
     return () => {
       active = false;
     };
-  }, [dataSource]);
-
-  useEffect(() => {
-    setActiveNotebookId(null);
   }, [dataSource]);
 
   const notebooks = dataSource === 'local' ? localNotebooks : apiNotebooks;

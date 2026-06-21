@@ -57,7 +57,6 @@ export default function NoteModal({ isOpen, onSave, onClose, note, mode = 'creat
         </div>
         <form onSubmit={handleSubmit}>
           {error && <div className={styles['modal-error']}>{error}</div>}
-          
           <div className={styles['form-group']}>
             <label htmlFor="note-name">Note Title / Description</label>
             <input
