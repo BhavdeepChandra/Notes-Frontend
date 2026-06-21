@@ -1,42 +1,42 @@
 import { TrashIcon, EditIcon } from '../Icons';
-import './NoteListItem.css';
+import styles from './NoteListItem.module.css';
 
 export default function NoteListItem({ note, onArchive, onClick }) {
   const { id, name, data, createdAt } = note;
 
   return (
-    <div className="note-list-item" onClick={() => onClick && onClick(note, 'view')}>
-      <div className="note-header-row">
-        <div className="note-title-container">
-          <h3 className="note-name">{name}</h3>
+    <div className={styles['note-list-item']} onClick={() => onClick && onClick(note, 'view')}>
+      <div className={styles['note-header-row']}>
+        <div className={styles['note-title-container']}>
+          <h3 className={styles['note-name']}>{name}</h3>
           {!note.archived && onArchive && (
             <>
               <button
-                className="delete-btn"
+                className={styles['delete-btn']}
                 onClick={(e) => {
                   e.stopPropagation();
                   onArchive(id);
                 }}
                 title="Archive Note"
               >
-                <TrashIcon className="delete-icon" />
+                <TrashIcon className={styles['delete-icon']} />
               </button>
               <button
-                className="edit-btn"
+                className={styles['edit-btn']}
                 onClick={(e) => {
                   e.stopPropagation();
                   onClick && onClick(note, 'edit');
                 }}
                 title="Edit Note"
               >
-                <EditIcon className="edit-icon" />
+                <EditIcon className={styles['edit-icon']} />
               </button>
             </>
           )}
         </div>
-        <span className="note-date">{createdAt}</span>
+        <span className={styles['note-date']}>{createdAt}</span>
       </div>
-      <p className="note-data">{data}</p>
+      <p className={styles['note-data']}>{data}</p>
     </div>
   );
 }

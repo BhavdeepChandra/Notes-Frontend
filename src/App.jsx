@@ -1,39 +1,29 @@
-import { useState } from 'react';
 import NoteList from './components/NoteList/NoteList';
 import NotebookShelf from './components/NotebookShelf/NotebookShelf';
-import { INITIAL_NOTEBOOKS } from './components/NotebookShelf/NotebookShelfHelper';
+import { NotebooksProvider } from './context/NotebooksProvider';
+import { useNotebooks } from './hooks/useNotebooks';
 
-function App() {
-  const [notebooks, setNotebooks] = useState(INITIAL_NOTEBOOKS);
-  const [activeNotebookId, setActiveNotebookId] = useState(null);
-
-  const activeNotebook = notebooks.find((nb) => nb.id === activeNotebookId);
-
-  const handleUpdateNotebook = (updatedNotebook) => {
-    setNotebooks((prevNotebooks) =>
-      prevNotebooks.map((nb) =>
-        nb.id === updatedNotebook.id ? updatedNotebook : nb
-      )
-    );
-  };
+function AppContent() {
+  const { activeNotebook, activeNotebookId } = useNotebooks();
 
   return (
     <>
       {activeNotebookId && activeNotebook ? (
-        <NoteList
-          notebook={activeNotebook}
-          onUpdateNotebook={handleUpdateNotebook}
-          onBack={() => setActiveNotebookId(null)}
-        />
+        <NoteList />
       ) : (
-        <NotebookShelf
-          notebooks={notebooks}
-          setNotebooks={setNotebooks}
-          onSelectNotebook={setActiveNotebookId}
-        />
+        <NotebookShelf />
       )}
     </>
   );
 }
 
+function App() {
+  return (
+    <NotebooksProvider>
+      <AppContent />
+    </NotebooksProvider>
+  );
+}
+
 export default App;
+

@@ -1,108 +1,112 @@
-import { useState } from 'react';
+import { useReducer, useMemo } from 'react';
 import NoteListItem from '../NoteListItem/NoteListItem';
 import { ActiveNotesIcon, ArchivedNotesIcon, PlusIcon, ArrowLeftIcon } from '../Icons';
 import NoteModal from '../Modal/NoteModal';
-import './NoteList.css';
+import { useNotebooks } from '../../hooks/useNotebooks';
+import { useNotes } from '../../hooks/useNotes';
+import styles from './NoteList.module.css';
 
-export default function NoteList({ notebook, onUpdateNotebook, onBack }) {
-  const [activeTab, setActiveTab] = useState('active');
-  const [isModalOpen, setIsModalOpen] = useState(false);
-  const [editingNote, setEditingNote] = useState(null);
-  const [modalMode, setModalMode] = useState('create');
+const initialState = {
+  activeTab: 'active',
+  isModalOpen: false,
+  editingNote: null,
+  modalMode: 'create',
+};
 
-  const notes = notebook?.notes || [];
+function noteListReducer(state, action) {
+  switch (action.type) {
+    case 'SET_TAB':
+      return {
+        ...state,
+        activeTab: action.payload,
+      };
+    case 'OPEN_CREATE_MODAL':
+      return {
+        ...state,
+        isModalOpen: true,
+        editingNote: null,
+        modalMode: 'create',
+      };
+    case 'OPEN_NOTE_MODAL':
+      return {
+        ...state,
+        isModalOpen: true,
+        editingNote: action.payload.note,
+        modalMode: action.payload.mode,
+      };
+    case 'CLOSE_MODAL':
+      return {
+        ...state,
+        isModalOpen: false,
+        editingNote: null,
+      };
+    default:
+      return state;
+  }
+}
 
-  const filteredNotes = notes.filter((note) =>
-    activeTab === 'active' ? !note.archived : note.archived
-  );
+export default function NoteList() {
+  const { activeNotebook, clearSelectedNotebook } = useNotebooks();
+  const { notes, addNote, updateNote, archiveNote } = useNotes(activeNotebook?.id);
+
+  const [state, dispatch] = useReducer(noteListReducer, initialState);
+  const { activeTab, isModalOpen, editingNote, modalMode } = state;
+  const activeNotes = useMemo(() => notes.filter((note) => !note.archived), [notes]);
+  const archivedNotes = useMemo(() => notes.filter((note) => note.archived), [notes]);
+  const filteredNotes = activeTab === 'active' ? activeNotes : archivedNotes;
 
   const handleOpenAddModal = () => {
-    setEditingNote(null);
-    setModalMode('create');
-    setIsModalOpen(true);
+    dispatch({ type: 'OPEN_CREATE_MODAL' });
   };
 
   const handleOpenNoteModal = (note, mode) => {
-    setEditingNote(note);
-    setModalMode(mode);
-    setIsModalOpen(true);
+    dispatch({ type: 'OPEN_NOTE_MODAL', payload: { note, mode } });
   };
 
   const handleSaveNote = (noteData) => {
-    let updatedNotes;
     if (modalMode === 'edit' && editingNote) {
-      updatedNotes = notes.map((note) =>
-        note.id === editingNote.id ? { ...note, name: noteData.name, data: noteData.data } : note
-      );
+      updateNote(editingNote.id, { name: noteData.name, data: noteData.data });
     } else {
-      const options = { month: 'short', day: 'numeric', year: 'numeric' };
-      const today = new Date().toLocaleDateString('en-US', options);
-
-      const newNote = {
-        id: Date.now().toString(),
-        name: noteData.name,
-        data: noteData.data,
-        createdAt: today,
-        archived: false,
-      };
-
-      updatedNotes = [newNote, ...notes];
+      addNote({ name: noteData.name, data: noteData.data });
     }
 
-    if (onUpdateNotebook && notebook) {
-      onUpdateNotebook({
-        ...notebook,
-        notes: updatedNotes
-      });
-    }
-
-    setIsModalOpen(false);
-    setEditingNote(null);
+    dispatch({ type: 'CLOSE_MODAL' });
   };
 
   const handleArchiveNote = (id) => {
-    const updatedNotes = notes.map((note) =>
-      note.id === id ? { ...note, archived: true } : note
-    );
-
-    if (onUpdateNotebook && notebook) {
-      onUpdateNotebook({
-        ...notebook,
-        notes: updatedNotes
-      });
-    }
+    archiveNote(id);
   };
 
   return (
-    <div className="note-list">
-      <div className="note-list-header">
-        <button className="back-to-notebooks-btn" onClick={onBack} aria-label="Back to notebooks">
-          <ArrowLeftIcon className="back-icon" />
+    <div className={styles['note-list']}>
+      <div className={styles['note-list-header']}>
+        <button className={styles['back-to-notebooks-btn']} onClick={clearSelectedNotebook} aria-label="Back to notebooks">
+          <ArrowLeftIcon className={styles['back-icon']} />
           <span>Back to Notebooks</span>
         </button>
-        <h1 className="notebook-title-header">{notebook?.name}</h1>
+        <h1 className={styles['notebook-title-header']}>{activeNotebook?.name}</h1>
       </div>
 
-      <div className="notes-tabs">
+      <div className={styles['notes-tabs']}>
         <button
-          className={`tab-item ${activeTab === 'active' ? 'active' : ''}`}
-          onClick={() => setActiveTab('active')}
+          className={`${styles['tab-item']} ${activeTab === 'active' ? styles['active'] : ''}`}
+          onClick={() => dispatch({ type: 'SET_TAB', payload: 'active' })}
         >
           Active
         </button>
         <button
-          className={`tab-item ${activeTab === 'archived' ? 'active' : ''}`}
-          onClick={() => setActiveTab('archived')}
+          className={`${styles['tab-item']} ${activeTab === 'archived' ? styles['active'] : ''}`}
+          onClick={() => dispatch({ type: 'SET_TAB', payload: 'archived' })}
         >
           Archived
         </button>
       </div>
 
-      <div className="notes-container">
+      <div className={styles['notes-container']}>
         {activeTab === 'active' && (
-          <div className="note-list-item add-note-item" onClick={handleOpenAddModal}>
-            <PlusIcon className="add-note-icon" />
-            <span className="add-note-text">Add Note</span>
+          <div className={`${styles['note-list-item']} ${styles['add-note-item']}`} onClick={handleOpenAddModal}>
+            <PlusIcon className={styles['add-note-icon']} />
+            <span className={styles['add-note-text']}>Add Note</span>
           </div>
         )}
 
@@ -116,15 +120,15 @@ export default function NoteList({ notebook, onUpdateNotebook, onBack }) {
             />
           ))
         ) : (
-          <div className="empty-state">
-            <div className="empty-icon">
+          <div className={styles['empty-state']}>
+            <div className={styles['empty-icon']}>
               {activeTab === 'active' ? (
                 <ActiveNotesIcon />
               ) : (
                 <ArchivedNotesIcon />
               )}
             </div>
-            <p className="empty-text">
+            <p className={styles['empty-text']}>
               {activeTab === 'active'
                 ? 'No active notes found.'
                 : 'No archived notes found.'}
@@ -133,16 +137,16 @@ export default function NoteList({ notebook, onUpdateNotebook, onBack }) {
         )}
       </div>
 
-      <NoteModal
-        isOpen={isModalOpen}
-        onSave={handleSaveNote}
-        onClose={() => {
-          setIsModalOpen(false);
-          setEditingNote(null);
-        }}
-        note={editingNote}
-        mode={modalMode}
-      />
+      {isModalOpen && (
+        <NoteModal
+          key={editingNote?.id || 'new'}
+          isOpen={isModalOpen}
+          onSave={handleSaveNote}
+          onClose={() => dispatch({ type: 'CLOSE_MODAL' })}
+          note={editingNote}
+          mode={modalMode}
+        />
+      )}
     </div>
   );
 }

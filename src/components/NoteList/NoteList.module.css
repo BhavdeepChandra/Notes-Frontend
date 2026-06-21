@@ -112,6 +112,23 @@
   }
 }
 
+/* Base note-list-item card style copied from NoteListItem module for Add Note item style preservation */
+.note-list-item {
+  display: flex;
+  flex-direction: column;
+  align-items: stretch;
+  gap: 8px;
+  padding: 20px 24px;
+  background: var(--bg);
+  border: 1px solid var(--border);
+  border-radius: 12px;
+  transition: all 0.3s cubic-bezier(0.25, 0.8, 0.25, 1);
+  cursor: pointer;
+  position: relative;
+  overflow: hidden;
+  box-shadow: 0 2px 4px rgba(0, 0, 0, 0.02);
+}
+
 .note-list-item.add-note-item {
   display: flex;
   flex-direction: row;
@@ -198,5 +215,3 @@
     margin-bottom: 20px;
   }
 }
-
-
