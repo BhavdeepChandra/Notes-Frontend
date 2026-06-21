@@ -1,0 +1,153 @@
+.note-list-item {
+  display: flex;
+  flex-direction: column;
+  align-items: stretch;
+  gap: 8px;
+  padding: 20px 24px;
+  background: var(--bg);
+  border: 1px solid var(--border);
+  border-radius: 12px;
+  transition: all 0.3s cubic-bezier(0.25, 0.8, 0.25, 1);
+  cursor: pointer;
+  position: relative;
+  overflow: hidden;
+  box-shadow: 0 2px 4px rgba(0, 0, 0, 0.02);
+}
+
+/* Accent highlight bar on left */
+.note-list-item::before {
+  content: '';
+  position: absolute;
+  left: 0;
+  top: 0;
+  bottom: 0;
+  width: 4px;
+  background: var(--accent);
+  opacity: 0;
+  transition: opacity 0.3s ease;
+}
+
+.note-list-item:hover {
+  transform: translateY(-2px);
+  border-color: var(--accent-border);
+  box-shadow: var(--shadow);
+  background: var(--code-bg);
+}
+
+.note-list-item:hover::before {
+  opacity: 1;
+}
+
+.note-header-row {
+  display: flex;
+  justify-content: space-between;
+  align-items: baseline;
+  width: 100%;
+  gap: 16px;
+}
+
+.note-title-container {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+}
+
+.note-name {
+  margin: 0;
+  font-size: 1.15rem;
+  font-weight: 600;
+  color: var(--text-h);
+  transition: color 0.2s ease;
+}
+
+.note-list-item:hover .note-name {
+  color: var(--accent);
+}
+
+.delete-btn,
+.edit-btn {
+  background: transparent;
+  border: none;
+  padding: 4px;
+  border-radius: 6px;
+  color: var(--text);
+  cursor: pointer;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  transition: all 0.2s cubic-bezier(0.4, 0, 0.2, 1);
+  opacity: 0;
+}
+
+.note-list-item:hover .delete-btn,
+.note-list-item:hover .edit-btn {
+  opacity: 0.7;
+}
+
+.note-list-item:hover .delete-btn:hover {
+  opacity: 1;
+  color: #ef4444;
+  background: rgba(239, 68, 68, 0.1);
+  transform: scale(1.1);
+}
+
+.note-list-item:hover .edit-btn:hover {
+  opacity: 1;
+  color: #eab308;
+  background: rgba(234, 179, 8, 0.1);
+  transform: scale(1.1);
+}
+
+.delete-icon,
+.edit-icon {
+  width: 16px;
+  height: 16px;
+  display: block;
+}
+
+@media (max-width: 640px) {
+  .delete-btn,
+  .edit-btn {
+    opacity: 0.8;
+  }
+}
+
+.note-data {
+  margin: 0;
+  font-size: 0.95rem;
+  color: var(--text);
+  line-height: 1.5;
+  display: -webkit-box;
+  -webkit-line-clamp: 1;
+  -webkit-box-orient: vertical;
+  overflow: hidden;
+}
+
+.note-date {
+  font-size: 0.8rem;
+  color: var(--text);
+  white-space: nowrap;
+  font-family: var(--sans);
+  transition: color 0.3s ease;
+}
+
+.note-list-item:hover .note-date {
+  color: var(--accent);
+}
+
+/* Responsive adjustments */
+@media (max-width: 640px) {
+  .note-list-item {
+    padding: 16px 20px;
+  }
+
+  .note-header-row {
+    flex-direction: column;
+    align-items: flex-start;
+    gap: 4px;
+  }
+
+  .note-date {
+    font-size: 0.75rem;
+  }
+}

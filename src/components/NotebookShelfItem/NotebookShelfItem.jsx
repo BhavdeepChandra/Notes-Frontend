@@ -1,5 +1,5 @@
 import { NotebookIcon, EditIcon, TrashIcon } from '../Icons';
-import './NotebookShelfItem.css';
+import styles from './NotebookShelfItem.module.css';
 
 export default function NotebookShelfItem({ notebook, onEdit, onDelete, onClick }) {
   const { name, createdAt, description, notes } = notebook;
@@ -7,7 +7,7 @@ export default function NotebookShelfItem({ notebook, onEdit, onDelete, onClick 
 
   return (
     <div
-      className="notebook-card"
+      className={styles['notebook-card']}
       onClick={onClick}
       role="button"
       tabIndex={0}
@@ -18,16 +18,16 @@ export default function NotebookShelfItem({ notebook, onEdit, onDelete, onClick 
         }
       }}
     >
-      <div className="notebook-card-accent"></div>
-      <div className="notebook-card-content">
-        <div className="notebook-card-header">
-          <div className="notebook-icon-wrapper">
-            <NotebookIcon className="notebook-icon" />
+      <div className={styles['notebook-card-accent']}></div>
+      <div className={styles['notebook-card-content']}>
+        <div className={styles['notebook-card-header']}>
+          <div className={styles['notebook-icon-wrapper']}>
+            <NotebookIcon className={styles['notebook-icon']} />
           </div>
-          <div className="notebook-actions">
+          <div className={styles['notebook-actions']}>
             {onEdit && (
               <button
-                className="notebook-edit-btn"
+                className={styles['notebook-edit-btn']}
                 onClick={(e) => {
                   e.stopPropagation();
                   onEdit();
@@ -35,12 +35,12 @@ export default function NotebookShelfItem({ notebook, onEdit, onDelete, onClick 
                 title="Edit Notebook"
                 aria-label="Edit Notebook"
               >
-                <EditIcon className="notebook-edit-icon" />
+                <EditIcon className={styles['notebook-edit-icon']} />
               </button>
             )}
             {onDelete && (
               <button
-                className="notebook-delete-btn"
+                className={styles['notebook-delete-btn']}
                 onClick={(e) => {
                   e.stopPropagation();
                   onDelete();
@@ -48,18 +48,18 @@ export default function NotebookShelfItem({ notebook, onEdit, onDelete, onClick 
                 title="Delete Notebook"
                 aria-label="Delete Notebook"
               >
-                <TrashIcon className="notebook-delete-icon" />
+                <TrashIcon className={styles['notebook-delete-icon']} />
               </button>
             )}
-            <span className="notebook-notes-count">
+            <span className={styles['notebook-notes-count']}>
               {notesCount} {notesCount === 1 ? 'note' : 'notes'}
             </span>
           </div>
         </div>
-        <h3 className="notebook-card-name">{name}</h3>
-        {description && <p className="notebook-card-description">{description}</p>}
-        <div className="notebook-card-footer">
-          <span className="notebook-card-date">Created {createdAt}</span>
+        <h3 className={styles['notebook-card-name']}>{name}</h3>
+        {description && <p className={styles['notebook-card-description']}>{description}</p>}
+        <div className={styles['notebook-card-footer']}>
+          <span className={styles['notebook-card-date']}>Created {createdAt}</span>
         </div>
       </div>
     </div>
