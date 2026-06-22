@@ -1,11 +1,7 @@
-import { useState, useMemo, useEffect } from 'react';
+import { useState, useMemo } from 'react';
 import { NotebooksContext } from './NotebooksContext';
-import { dataService } from '../services/dataService';
 
 export function NotebooksProvider({ children }) {
-  const [localNotebooks, setLocalNotebooks] = useState([]);
-  const [apiNotebooks, setApiNotebooks] = useState([]);
-
   const [activeNotebookId, setActiveNotebookId] = useState(null);
   const [dataSource, setDataSource] = useState('local');
   const [prevDataSource, setPrevDataSource] = useState('local');
@@ -15,35 +11,12 @@ export function NotebooksProvider({ children }) {
     setActiveNotebookId(null);
   }
 
-  useEffect(() => {
-    let active = true;
-    const load = async () => {
-      const data = await dataService.getNotebooks(dataSource);
-      if (active) {
-        if (dataSource === 'local') {
-          setLocalNotebooks(data);
-        } else {
-          setApiNotebooks(data);
-        }
-      }
-    };
-    load();
-    return () => {
-      active = false;
-    };
-  }, [dataSource]);
-
-  const notebooks = dataSource === 'local' ? localNotebooks : apiNotebooks;
-  const setNotebooks = dataSource === 'local' ? setLocalNotebooks : setApiNotebooks;
-
   const contextValue = useMemo(() => ({
-    notebooks,
-    setNotebooks,
     activeNotebookId,
     setActiveNotebookId,
     dataSource,
     setDataSource,
-  }), [notebooks, setNotebooks, activeNotebookId, dataSource]);
+  }), [activeNotebookId, dataSource]);
 
   return (
     <NotebooksContext.Provider value={contextValue}>

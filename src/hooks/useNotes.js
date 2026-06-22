@@ -1,57 +1,75 @@
+import { useState, useEffect } from 'react';
 import { useNotebooksContext } from '../context/NotebooksContext';
 import { dataService } from '../services/dataService';
 
 export function useNotes(notebookId) {
-  const { notebooks, setNotebooks, dataSource } = useNotebooksContext();
-
-  const notebook = notebooks.find((nb) => nb.id === notebookId);
-  const notes = notebook?.notes || [];
+  const { dataSource } = useNotebooksContext();
+  const [notebook, setNotebook] = useState(null);
 
   const addNote = async ({ name, data }) => {
     if (!notebookId) return;
     const newNote = await dataService.createNote(dataSource, notebookId, name, data);
 
-    setNotebooks((prev) =>
-      prev.map((nb) =>
-        nb.id === notebookId ? { ...nb, notes: [newNote, ...nb.notes] } : nb
-      )
-    );
+    setNotebook((prev) => {
+      if (!prev) return prev;
+      return {
+        ...prev,
+        notes: [newNote, ...prev.notes],
+      };
+    });
   };
 
   const updateNote = async (noteId, { name, data }) => {
     if (!notebookId) return;
     const updated = await dataService.updateNote(dataSource, notebookId, noteId, name, data);
-    setNotebooks((prev) =>
-      prev.map((nb) => {
-        if (nb.id !== notebookId) return nb;
-        return {
-          ...nb,
-          notes: nb.notes.map((note) =>
-            note.id === noteId ? { ...note, ...updated } : note
-          ),
-        };
-      })
-    );
+
+    setNotebook((prev) => {
+      if (!prev) return prev;
+      return {
+        ...prev,
+        notes: prev.notes.map((note) =>
+          note.id === noteId ? { ...note, ...updated } : note
+        ),
+      };
+    });
   };
 
   const archiveNote = async (noteId) => {
     if (!notebookId) return;
     await dataService.archiveNote(dataSource, notebookId, noteId);
-    setNotebooks((prev) =>
-      prev.map((nb) => {
-        if (nb.id !== notebookId) return nb;
-        return {
-          ...nb,
-          notes: nb.notes.map((note) =>
-            note.id === noteId ? { ...note, archived: true } : note
-          ),
-        };
-      })
-    );
+
+    setNotebook((prev) => {
+      if (!prev) return prev;
+      return {
+        ...prev,
+        notes: prev.notes.map((note) =>
+          note.id === noteId ? { ...note, archived: true } : note
+        ),
+      };
+    });
   };
+
+  const notes = notebook?.notes || [];
+
+  useEffect(() => {
+    if (!notebookId) return;
+    
+    let active = true;
+    const loadNotebook = async () => {
+      const data = await dataService.getNotebook(dataSource, notebookId);
+      if (active) {
+        setNotebook(data);
+      }
+    };
+    loadNotebook();
+    return () => {
+      active = false;
+    };
+  }, [notebookId, dataSource]);
 
   return {
     notes,
+    activeNotebook: notebook,
     addNote,
     updateNote,
     archiveNote,
