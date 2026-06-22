@@ -1,14 +1,14 @@
 import NoteList from './components/NoteList/NoteList';
 import NotebookShelf from './components/NotebookShelf/NotebookShelf';
 import { NotebooksProvider } from './context/NotebooksProvider';
-import { useNotebooks } from './hooks/useNotebooks';
+import { useNotebooksContext } from './context/NotebooksContext';
 
 function AppContent() {
-  const { activeNotebook, activeNotebookId } = useNotebooks();
+  const { activeNotebookId } = useNotebooksContext();
 
   return (
     <>
-      {activeNotebookId && activeNotebook ? (
+      {activeNotebookId ? (
         <NoteList />
       ) : (
         <NotebookShelf />

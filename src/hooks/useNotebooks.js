@@ -1,17 +1,16 @@
+import { useState, useEffect } from 'react';
 import { useNotebooksContext } from '../context/NotebooksContext';
 import { dataService } from '../services/dataService';
 
 export function useNotebooks() {
   const {
-    notebooks,
-    setNotebooks,
     activeNotebookId,
     setActiveNotebookId,
     dataSource,
     setDataSource,
   } = useNotebooksContext();
 
-  const activeNotebook = notebooks.find((nb) => nb.id === activeNotebookId);
+  const [notebooks, setNotebooks] = useState([]);
 
   const selectNotebook = (id) => setActiveNotebookId(id);
   const clearSelectedNotebook = () => setActiveNotebookId(null);
@@ -36,9 +35,22 @@ export function useNotebooks() {
     }
   };
 
+  useEffect(() => {
+    let active = true;
+    const loadNotebooks = async () => {
+      const data = await dataService.getNotebooks(dataSource);
+      if (active) {
+        setNotebooks(data);
+      }
+    };
+    loadNotebooks();
+    return () => {
+      active = false;
+    };
+  }, [dataSource]);
+
   return {
     notebooks,
-    activeNotebook,
     activeNotebookId,
     selectNotebook,
     clearSelectedNotebook,

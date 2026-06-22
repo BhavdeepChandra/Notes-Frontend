@@ -104,6 +104,14 @@ export const dataService = {
     return [];
   },
 
+  async getNotebook(source, id) {
+    if (source === 'local') {
+      const notebooks = getLocalNotebooks();
+      return notebooks.find((nb) => nb.id === id) || null;
+    }
+    return null;
+  },
+
   async createNotebook(source, name, description) {
     if (source === 'local') {
       return createLocalNotebook(name, description);

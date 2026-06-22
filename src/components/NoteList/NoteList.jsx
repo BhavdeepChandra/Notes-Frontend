@@ -2,7 +2,7 @@ import { useReducer, useMemo } from 'react';
 import NoteListItem from '../NoteListItem/NoteListItem';
 import { ActiveNotesIcon, ArchivedNotesIcon, PlusIcon, ArrowLeftIcon } from '../Icons';
 import NoteModal from '../Modal/NoteModal';
-import { useNotebooks } from '../../hooks/useNotebooks';
+import { useNotebooksContext } from '../../context/NotebooksContext';
 import { useNotes } from '../../hooks/useNotes';
 import styles from './NoteList.module.css';
 
@@ -46,14 +46,12 @@ function noteListReducer(state, action) {
 }
 
 export default function NoteList() {
-  const { activeNotebook, clearSelectedNotebook } = useNotebooks();
-  const { notes, addNote, updateNote, archiveNote } = useNotes(activeNotebook?.id);
-
+  const { activeNotebookId, setActiveNotebookId } = useNotebooksContext();
+  const { notes, activeNotebook, addNote, updateNote, archiveNote } = useNotes(activeNotebookId);
   const [state, dispatch] = useReducer(noteListReducer, initialState);
   const { activeTab, isModalOpen, editingNote, modalMode } = state;
-  const activeNotes = useMemo(() => notes.filter((note) => !note.archived), [notes]);
-  const archivedNotes = useMemo(() => notes.filter((note) => note.archived), [notes]);
-  const filteredNotes = activeTab === 'active' ? activeNotes : archivedNotes;
+
+  const clearSelectedNotebook = () => setActiveNotebookId(null);
 
   const handleOpenAddModal = () => {
     dispatch({ type: 'OPEN_CREATE_MODAL' });
@@ -76,6 +74,10 @@ export default function NoteList() {
   const handleArchiveNote = (id) => {
     archiveNote(id);
   };
+
+  const activeNotes = useMemo(() => notes.filter((note) => !note.archived), [notes]);
+  const archivedNotes = useMemo(() => notes.filter((note) => note.archived), [notes]);
+  const filteredNotes = activeTab === 'active' ? activeNotes : archivedNotes;
 
   return (
     <div className={styles['note-list']}>
