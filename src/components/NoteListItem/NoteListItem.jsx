@@ -1,7 +1,8 @@
+import { memo } from 'react';
 import { TrashIcon, EditIcon } from '../Icons';
 import styles from './NoteListItem.module.css';
 
-export default function NoteListItem({ note, onArchive, onClick }) {
+const NoteListItem = memo(function NoteListItem({ note, onArchive, onClick }) {
   const { id, name, data, createdAt } = note;
 
   return (
@@ -39,4 +40,6 @@ export default function NoteListItem({ note, onArchive, onClick }) {
       <p className={styles['note-data']}>{data}</p>
     </div>
   );
-}
+});
+
+export default NoteListItem;

@@ -1,4 +1,4 @@
-import { useState, useEffect } from 'react';
+import { useState, useEffect, useCallback } from 'react';
 import { useNotebooksContext } from '../context/NotebooksContext';
 import { dataService } from '../services/dataService';
 
@@ -12,28 +12,25 @@ export function useNotebooks() {
 
   const [notebooks, setNotebooks] = useState([]);
 
-  const selectNotebook = (id) => setActiveNotebookId(id);
-  const clearSelectedNotebook = () => setActiveNotebookId(null);
+  const selectNotebook = useCallback((id) => setActiveNotebookId(id), [setActiveNotebookId]);
+  const clearSelectedNotebook = useCallback(() => setActiveNotebookId(null), [setActiveNotebookId]);
 
-  const addNotebook = async (name, description) => {
+  const addNotebook = useCallback(async (name, description) => {
     const newNotebook = await dataService.createNotebook(dataSource, name, description);
     setNotebooks((prev) => [...prev, newNotebook]);
-  };
+  }, [dataSource]);
 
-  const updateNotebook = async (id, name, description) => {
+  const updateNotebook = useCallback(async (id, name, description) => {
     const updated = await dataService.updateNotebook(dataSource, id, name, description);
     setNotebooks((prev) =>
       prev.map((nb) => (nb.id === id ? { ...nb, ...updated } : nb))
     );
-  };
+  }, [dataSource]);
 
-  const deleteNotebook = async (id) => {
+  const deleteNotebook = useCallback(async (id) => {
     await dataService.deleteNotebook(dataSource, id);
     setNotebooks((prev) => prev.filter((nb) => nb.id !== id));
-    if (activeNotebookId === id) {
-      clearSelectedNotebook();
-    }
-  };
+  }, [dataSource]);
 
   useEffect(() => {
     let active = true;

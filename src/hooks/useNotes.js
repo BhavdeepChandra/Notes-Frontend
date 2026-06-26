@@ -1,12 +1,14 @@
-import { useState, useEffect } from 'react';
+import { useState, useEffect, useCallback } from 'react';
 import { useNotebooksContext } from '../context/NotebooksContext';
 import { dataService } from '../services/dataService';
+
+const EMPTY_ARRAY = [];
 
 export function useNotes(notebookId) {
   const { dataSource } = useNotebooksContext();
   const [notebook, setNotebook] = useState(null);
 
-  const addNote = async ({ name, data }) => {
+  const addNote = useCallback(async ({ name, data }) => {
     if (!notebookId) return;
     const newNote = await dataService.createNote(dataSource, notebookId, name, data);
 
@@ -17,9 +19,9 @@ export function useNotes(notebookId) {
         notes: [newNote, ...prev.notes],
       };
     });
-  };
+  }, [dataSource, notebookId]);
 
-  const updateNote = async (noteId, { name, data }) => {
+  const updateNote = useCallback(async (noteId, { name, data }) => {
     if (!notebookId) return;
     const updated = await dataService.updateNote(dataSource, notebookId, noteId, name, data);
 
@@ -32,9 +34,9 @@ export function useNotes(notebookId) {
         ),
       };
     });
-  };
+  }, [dataSource, notebookId]);
 
-  const archiveNote = async (noteId) => {
+  const archiveNote = useCallback(async (noteId) => {
     if (!notebookId) return;
     await dataService.archiveNote(dataSource, notebookId, noteId);
 
@@ -47,9 +49,9 @@ export function useNotes(notebookId) {
         ),
       };
     });
-  };
+  }, [dataSource, notebookId]);
 
-  const notes = notebook?.notes || [];
+  const notes = notebook?.notes || EMPTY_ARRAY;
 
   useEffect(() => {
     if (!notebookId) return;

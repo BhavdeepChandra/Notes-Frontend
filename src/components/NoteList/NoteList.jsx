@@ -1,4 +1,4 @@
-import { useReducer, useMemo } from 'react';
+import { useReducer, useMemo, useCallback } from 'react';
 import NoteListItem from '../NoteListItem/NoteListItem';
 import { ActiveNotesIcon, ArchivedNotesIcon, PlusIcon, ArrowLeftIcon } from '../Icons';
 import NoteModal from '../Modal/NoteModal';
@@ -51,17 +51,17 @@ export default function NoteList() {
   const [state, dispatch] = useReducer(noteListReducer, initialState);
   const { activeTab, isModalOpen, editingNote, modalMode } = state;
 
-  const clearSelectedNotebook = () => setActiveNotebookId(null);
+  const clearSelectedNotebook = useCallback(() => setActiveNotebookId(null), [setActiveNotebookId]);
 
-  const handleOpenAddModal = () => {
+  const handleOpenAddModal = useCallback(() => {
     dispatch({ type: 'OPEN_CREATE_MODAL' });
-  };
+  }, [dispatch]);
 
-  const handleOpenNoteModal = (note, mode) => {
+  const handleOpenNoteModal = useCallback((note, mode) => {
     dispatch({ type: 'OPEN_NOTE_MODAL', payload: { note, mode } });
-  };
+  }, [dispatch]);
 
-  const handleSaveNote = (noteData) => {
+  const handleSaveNote = useCallback((noteData) => {
     if (modalMode === 'edit' && editingNote) {
       updateNote(editingNote.id, { name: noteData.name, data: noteData.data });
     } else {
@@ -69,11 +69,11 @@ export default function NoteList() {
     }
 
     dispatch({ type: 'CLOSE_MODAL' });
-  };
+  }, [modalMode, editingNote, updateNote, addNote, dispatch]);
 
-  const handleArchiveNote = (id) => {
+  const handleArchiveNote = useCallback((id) => {
     archiveNote(id);
-  };
+  }, [archiveNote]);
 
   const activeNotes = useMemo(() => notes.filter((note) => !note.archived), [notes]);
   const archivedNotes = useMemo(() => notes.filter((note) => note.archived), [notes]);
