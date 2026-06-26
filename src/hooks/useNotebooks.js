@@ -1,19 +1,24 @@
 import { useState, useEffect, useCallback } from 'react';
+import { useNavigate } from 'react-router-dom';
 import { useNotebooksContext } from '../context/NotebooksContext';
 import { dataService } from '../services/dataService';
 
 export function useNotebooks() {
   const {
-    activeNotebookId,
-    setActiveNotebookId,
     dataSource,
     setDataSource,
   } = useNotebooksContext();
 
   const [notebooks, setNotebooks] = useState([]);
+  const navigate = useNavigate();
 
-  const selectNotebook = useCallback((id) => setActiveNotebookId(id), [setActiveNotebookId]);
-  const clearSelectedNotebook = useCallback(() => setActiveNotebookId(null), [setActiveNotebookId]);
+  const selectNotebook = useCallback((id) => {
+    navigate(`/notebook/${id}`);
+  }, [navigate]);
+
+  const clearSelectedNotebook = useCallback(() => {
+    navigate('/');
+  }, [navigate]);
 
   const addNotebook = useCallback(async (name, description) => {
     const newNotebook = await dataService.createNotebook(dataSource, name, description);
@@ -48,7 +53,6 @@ export function useNotebooks() {
 
   return {
     notebooks,
-    activeNotebookId,
     selectNotebook,
     clearSelectedNotebook,
     addNotebook,

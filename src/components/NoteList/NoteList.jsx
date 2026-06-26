@@ -1,8 +1,8 @@
 import { useReducer, useMemo, useCallback } from 'react';
+import { useParams, useNavigate } from 'react-router-dom';
 import NoteListItem from '../NoteListItem/NoteListItem';
 import { ActiveNotesIcon, ArchivedNotesIcon, PlusIcon, ArrowLeftIcon } from '../Icons';
 import NoteModal from '../Modal/NoteModal';
-import { useNotebooksContext } from '../../context/NotebooksContext';
 import { useNotes } from '../../hooks/useNotes';
 import styles from './NoteList.module.css';
 
@@ -46,12 +46,15 @@ function noteListReducer(state, action) {
 }
 
 export default function NoteList() {
-  const { activeNotebookId, setActiveNotebookId } = useNotebooksContext();
-  const { notes, activeNotebook, addNote, updateNote, archiveNote } = useNotes(activeNotebookId);
+  const { notebookId } = useParams();
+  const navigate = useNavigate();
+  const { notes, activeNotebook, addNote, updateNote, archiveNote } = useNotes(notebookId);
   const [state, dispatch] = useReducer(noteListReducer, initialState);
   const { activeTab, isModalOpen, editingNote, modalMode } = state;
 
-  const clearSelectedNotebook = useCallback(() => setActiveNotebookId(null), [setActiveNotebookId]);
+  const clearSelectedNotebook = useCallback(() => {
+    navigate('/');
+  }, [navigate]);
 
   const handleOpenAddModal = useCallback(() => {
     dispatch({ type: 'OPEN_CREATE_MODAL' });
