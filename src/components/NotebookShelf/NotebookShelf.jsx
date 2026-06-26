@@ -1,4 +1,4 @@
-import { useReducer } from 'react';
+import { useReducer, useCallback } from 'react';
 import NotebookShelfItem from '../NotebookShelfItem/NotebookShelfItem';
 import { PlusIcon, HardDriveIcon, CloudIcon } from '../Icons';
 import NotebookModal from '../Modal/NotebookModal';
@@ -48,22 +48,22 @@ export default function NotebookShelf() {
   const [state, dispatch] = useReducer(shelfReducer, initialState);
   const { isModalOpen, editingNotebook } = state;
 
-  const handleOpenEditModal = (notebook) => {
+  const handleOpenEditModal = useCallback((notebook) => {
     dispatch({ type: 'OPEN_EDIT_MODAL', payload: notebook });
-  };
+  }, [dispatch]);
 
-  const handleDeleteNotebook = (notebookId) => {
+  const handleDeleteNotebook = useCallback((notebookId) => {
     deleteNotebook(notebookId);
-  };
+  }, [deleteNotebook]);
 
-  const handleSaveNotebook = ({ name, description }) => {
+  const handleSaveNotebook = useCallback(({ name, description }) => {
     if (editingNotebook) {
       updateNotebook(editingNotebook.id, name, description);
     } else {
       addNotebook(name, description);
     }
     dispatch({ type: 'CLOSE_MODAL' });
-  };
+  }, [editingNotebook, updateNotebook, addNotebook, dispatch]);
 
   return (
     <div className={styles['notebookshelf-container']}>
@@ -115,9 +115,9 @@ export default function NotebookShelf() {
             <NotebookShelfItem
               key={notebook.id}
               notebook={notebook}
-              onEdit={() => handleOpenEditModal(notebook)}
-              onDelete={() => handleDeleteNotebook(notebook.id)}
-              onClick={() => selectNotebook(notebook.id)}
+              onEdit={handleOpenEditModal}
+              onDelete={handleDeleteNotebook}
+              onClick={selectNotebook}
             />
           ))}
           

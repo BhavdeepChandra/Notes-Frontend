@@ -1,20 +1,21 @@
+import { memo } from 'react';
 import { NotebookIcon, EditIcon, TrashIcon } from '../Icons';
 import styles from './NotebookShelfItem.module.css';
 
-export default function NotebookShelfItem({ notebook, onEdit, onDelete, onClick }) {
+const NotebookShelfItem = memo(function NotebookShelfItem({ notebook, onEdit, onDelete, onClick }) {
   const { name, createdAt, description, notes } = notebook;
   const notesCount = notes ? notes.length : 0;
 
   return (
     <div
       className={styles['notebook-card']}
-      onClick={onClick}
+      onClick={() => onClick(notebook.id)}
       role="button"
       tabIndex={0}
       onKeyDown={(e) => {
         if (e.key === 'Enter' || e.key === ' ') {
           e.preventDefault();
-          onClick && onClick();
+          onClick(notebook.id);
         }
       }}
     >
@@ -30,7 +31,7 @@ export default function NotebookShelfItem({ notebook, onEdit, onDelete, onClick 
                 className={styles['notebook-edit-btn']}
                 onClick={(e) => {
                   e.stopPropagation();
-                  onEdit();
+                  onEdit(notebook);
                 }}
                 title="Edit Notebook"
                 aria-label="Edit Notebook"
@@ -43,7 +44,7 @@ export default function NotebookShelfItem({ notebook, onEdit, onDelete, onClick 
                 className={styles['notebook-delete-btn']}
                 onClick={(e) => {
                   e.stopPropagation();
-                  onDelete();
+                  onDelete(notebook.id);
                 }}
                 title="Delete Notebook"
                 aria-label="Delete Notebook"
@@ -64,4 +65,6 @@ export default function NotebookShelfItem({ notebook, onEdit, onDelete, onClick 
       </div>
     </div>
   );
-}
+});
+
+export default NotebookShelfItem;
