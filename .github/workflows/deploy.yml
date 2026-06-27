@@ -34,16 +34,6 @@ jobs:
       - name: Build
         run: npm run build   
 
-      - name: Debug Authentication
-        run: |
-          echo "Checking credentials at: $GOOGLE_APPLICATION_CREDENTIALS"
-          cat $GOOGLE_APPLICATION_CREDENTIALS
-          echo $GOOGLE_APPLICATION_CREDENTIALS
-          ls -l $GOOGLE_APPLICATION_CREDENTIALS  
-          gcloud auth list
-        env:
-          GOOGLE_APPLICATION_CREDENTIALS: ${{ steps.auth.outputs.credentials_file_path }}
-
       - name: Deploy to Firebase
         run: |
           npx firebase-tools@latest deploy --only hosting --project '${{ secrets.GCP_PROJECT_ID }}' --non-interactive
