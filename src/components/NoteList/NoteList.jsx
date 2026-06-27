@@ -65,14 +65,14 @@ export default function NoteList() {
   }, [dispatch]);
 
   const handleSaveNote = useCallback((noteData) => {
-    if (modalMode === 'edit' && editingNote) {
-      updateNote(editingNote.id, { name: noteData.name, data: noteData.data });
+    if (noteData.id) {
+      updateNote(noteData.id, { name: noteData.name, data: noteData.data });
     } else {
       addNote({ name: noteData.name, data: noteData.data });
     }
 
     dispatch({ type: 'CLOSE_MODAL' });
-  }, [modalMode, editingNote, updateNote, addNote, dispatch]);
+  }, [updateNote, addNote, dispatch]);
 
   const handleArchiveNote = useCallback((id) => {
     archiveNote(id);

@@ -5,8 +5,22 @@ import styles from './NoteListItem.module.css';
 const NoteListItem = memo(function NoteListItem({ note, onArchive, onClick }) {
   const { id, name, data, createdAt } = note;
 
+  const handleCardClick = () => {
+    onClick && onClick(note, 'view');
+  };
+
+  const handleArchiveClick = (e) => {
+    e.stopPropagation();
+    onArchive && onArchive(id);
+  };
+
+  const handleEditClick = (e) => {
+    e.stopPropagation();
+    onClick && onClick(note, 'edit');
+  };
+
   return (
-    <div className={styles['note-list-item']} onClick={() => onClick && onClick(note, 'view')}>
+    <div className={styles['note-list-item']} onClick={handleCardClick}>
       <div className={styles['note-header-row']}>
         <div className={styles['note-title-container']}>
           <h3 className={styles['note-name']}>{name}</h3>
@@ -14,20 +28,14 @@ const NoteListItem = memo(function NoteListItem({ note, onArchive, onClick }) {
             <>
               <button
                 className={styles['delete-btn']}
-                onClick={(e) => {
-                  e.stopPropagation();
-                  onArchive(id);
-                }}
+                onClick={handleArchiveClick}
                 title="Archive Note"
               >
                 <TrashIcon className={styles['delete-icon']} />
               </button>
               <button
                 className={styles['edit-btn']}
-                onClick={(e) => {
-                  e.stopPropagation();
-                  onClick && onClick(note, 'edit');
-                }}
+                onClick={handleEditClick}
                 title="Edit Note"
               >
                 <EditIcon className={styles['edit-icon']} />

@@ -39,7 +39,7 @@ export default function NotebookModal({ isOpen, onSave, onClose, notebook, mode 
       return;
     }
 
-    onSave({ name, description });
+    onSave({ id: notebook?.id, name, description });
   };
 
   return (
