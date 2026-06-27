@@ -56,14 +56,14 @@ export default function NotebookShelf() {
     deleteNotebook(notebookId);
   }, [deleteNotebook]);
 
-  const handleSaveNotebook = useCallback(({ name, description }) => {
-    if (editingNotebook) {
-      updateNotebook(editingNotebook.id, name, description);
+  const handleSaveNotebook = useCallback(({ id, name, description }) => {
+    if (id) {
+      updateNotebook(id, name, description);
     } else {
       addNotebook(name, description);
     }
     dispatch({ type: 'CLOSE_MODAL' });
-  }, [editingNotebook, updateNotebook, addNotebook, dispatch]);
+  }, [updateNotebook, addNotebook, dispatch]);
 
   return (
     <div className={styles['notebookshelf-container']}>

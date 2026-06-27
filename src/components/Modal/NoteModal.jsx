@@ -43,7 +43,7 @@ export default function NoteModal({ isOpen, onSave, onClose, note, mode = 'creat
       return;
     }
 
-    onSave({ name, data });
+    onSave({ id: note?.id, name, data });
   };
 
   return (

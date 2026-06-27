@@ -3,21 +3,37 @@ import { NotebookIcon, EditIcon, TrashIcon } from '../Icons';
 import styles from './NotebookShelfItem.module.css';
 
 const NotebookShelfItem = memo(function NotebookShelfItem({ notebook, onEdit, onDelete, onClick }) {
-  const { name, createdAt, description, notes } = notebook;
+  const { id, name, createdAt, description, notes } = notebook;
   const notesCount = notes ? notes.length : 0;
+
+  const handleCardClick = () => {
+    onClick(id);
+  };
+
+  const handleKeyDown = (e) => {
+    if (e.key === 'Enter' || e.key === ' ') {
+      e.preventDefault();
+      onClick(id);
+    }
+  };
+
+  const handleEditClick = (e) => {
+    e.stopPropagation();
+    onEdit && onEdit(notebook);
+  };
+
+  const handleDeleteClick = (e) => {
+    e.stopPropagation();
+    onDelete && onDelete(id);
+  };
 
   return (
     <div
       className={styles['notebook-card']}
-      onClick={() => onClick(notebook.id)}
+      onClick={handleCardClick}
       role="button"
       tabIndex={0}
-      onKeyDown={(e) => {
-        if (e.key === 'Enter' || e.key === ' ') {
-          e.preventDefault();
-          onClick(notebook.id);
-        }
-      }}
+      onKeyDown={handleKeyDown}
     >
       <div className={styles['notebook-card-accent']}></div>
       <div className={styles['notebook-card-content']}>
@@ -29,10 +45,7 @@ const NotebookShelfItem = memo(function NotebookShelfItem({ notebook, onEdit, on
             {onEdit && (
               <button
                 className={styles['notebook-edit-btn']}
-                onClick={(e) => {
-                  e.stopPropagation();
-                  onEdit(notebook);
-                }}
+                onClick={handleEditClick}
                 title="Edit Notebook"
                 aria-label="Edit Notebook"
               >
@@ -42,10 +55,7 @@ const NotebookShelfItem = memo(function NotebookShelfItem({ notebook, onEdit, on
             {onDelete && (
               <button
                 className={styles['notebook-delete-btn']}
-                onClick={(e) => {
-                  e.stopPropagation();
-                  onDelete(notebook.id);
-                }}
+                onClick={handleDeleteClick}
                 title="Delete Notebook"
                 aria-label="Delete Notebook"
               >
